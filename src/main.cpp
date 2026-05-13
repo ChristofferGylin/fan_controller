@@ -2,6 +2,17 @@
 
 const int FAN_PWM_PIN = 9;
 
+int levels[] = {
+    0,
+    64,
+    128,
+    192,
+    256,
+    320
+};
+
+int selected = 0;
+
 void setup() {
     pinMode(FAN_PWM_PIN, OUTPUT);
 
@@ -13,7 +24,7 @@ void setup() {
 
     ICR1 = 320;
 
-    OCR1A = 160;
+    OCR1A = levels[selected];
 }
 
 void loop() {
