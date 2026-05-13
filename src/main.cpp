@@ -12,7 +12,12 @@ int levels[] = {
     320
 };
 
+int levelsSize = sizeof(levels) / sizeof(levels[0]);
+
 int selected = 0;
+bool buttonPressed = false;
+unsigned long lastInput = 0;
+const unsigned long inputDelay = 50;
 
 void setup() {
     pinMode(FAN_PWM_PIN, OUTPUT);
@@ -30,4 +35,27 @@ void setup() {
 }
 
 void loop() {
+
+    if ((millis() - inputDelay) > lastInput) {
+
+        int buttonState = digitalRead(BUTTON_PIN);
+
+        if (!buttonPressed && buttonState == LOW) {
+            buttonPressed = true;
+            lastInput = millis();
+
+            selected++;
+
+            if (selected >= levelsSize) {
+                selected = 0;
+            }
+
+            OCR1A = levels[selected];
+        }
+
+        if (buttonPressed && buttonState == HIGH) {
+            buttonPressed = false;
+            lastInput = millis();
+        }
+    }
 }
