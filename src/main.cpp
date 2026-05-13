@@ -1,6 +1,7 @@
 #include <Arduino.h>
 
 const int FAN_PWM_PIN = 9;
+const int BUTTON_PIN = 2;
 
 int levels[] = {
     0,
@@ -15,6 +16,7 @@ int selected = 0;
 
 void setup() {
     pinMode(FAN_PWM_PIN, OUTPUT);
+    pinMode(BUTTON_PIN, INPUT_PULLUP);
 
     TCCR1A = 0;
     TCCR1B = 0;
