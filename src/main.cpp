@@ -1,7 +1,9 @@
 #include <Arduino.h>
+#include <EEPROM.h>
 
 const int FAN_PWM_PIN = 9;
 const int BUTTON_PIN = 2;
+const int MEM_ADDRESS = 0;
 
 int levels[] = {
     0,
@@ -16,8 +18,10 @@ int levelsSize = sizeof(levels) / sizeof(levels[0]);
 
 int selected = 0;
 bool buttonPressed = false;
+bool saveSelection = false;
 unsigned long lastInput = 0;
 const unsigned long inputDelay = 50;
+const unsigned long saveDelay = 5000;
 
 void setup() {
     pinMode(FAN_PWM_PIN, OUTPUT);
@@ -30,6 +34,14 @@ void setup() {
     TCCR1B |= (1 << WGM13) | (1 << WGM12) | (1 << CS10);
 
     ICR1 = 320;
+
+    byte storedSelected = EEPROM.read(MEM_ADDRESS);
+
+    if (storedSelected >= levelsSize) {
+        selected = 0;
+    } else {
+        selected = storedSelected;
+    }
 
     OCR1A = levels[selected];
 }
@@ -51,11 +63,17 @@ void loop() {
             }
 
             OCR1A = levels[selected];
+            saveSelection = true;
         }
 
         if (buttonPressed && buttonState == HIGH) {
             buttonPressed = false;
             lastInput = millis();
         }
+    }
+
+    if (saveSelection && (millis() - saveDelay) > lastInput) {
+        EEPROM.update(MEM_ADDRESS, selected);
+        saveSelection = false;
     }
 }
