@@ -6,12 +6,12 @@ const int BUTTON_PIN = 2;
 const int MEM_ADDRESS = 0;
 
 int levels[] = {
-    0,
-    64,
-    128,
-    192,
-    256,
-    320
+    130,
+    168,
+    206,
+    244,
+    282,
+    320,
 };
 
 int levelsSize = sizeof(levels) / sizeof(levels[0]);
