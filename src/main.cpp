@@ -19,9 +19,11 @@ int levelsSize = sizeof(levels) / sizeof(levels[0]);
 int selected = 0;
 bool buttonPressed = false;
 bool saveSelection = false;
+bool standby = false;
 unsigned long lastInput = 0;
 const unsigned long inputDelay = 50;
 const unsigned long saveDelay = 8000;
+const unsigned long standbyDelay = 3000;
 
 void setup() {
     pinMode(FAN_PWM_PIN, OUTPUT);
@@ -48,31 +50,43 @@ void setup() {
 
 void loop() {
 
-    if ((millis() - inputDelay) > lastInput) {
+    unsigned long now = millis();
+
+    if ((now - inputDelay) > lastInput) {
 
         int buttonState = digitalRead(BUTTON_PIN);
 
         if (!buttonPressed && buttonState == LOW) {
             buttonPressed = true;
-            lastInput = millis();
+            lastInput = now;
+        }
 
-            selected++;
-
-            if (selected >= levelsSize) {
-                selected = 0;
-            }
-
-            OCR1A = levels[selected];
-            saveSelection = true;
+        if (buttonPressed && (now - standby) > lastInput) {
+            standby = true;
+            OCR1A = 0;
         }
 
         if (buttonPressed && buttonState == HIGH) {
             buttonPressed = false;
-            lastInput = millis();
+            lastInput = now;
+
+            if ((now - standby) <= lastInput) {
+                
+                if (!standby) {
+                    selected++;
+
+                    if (selected >= levelsSize) {
+                        selected = 0;
+                    }
+                }
+
+                OCR1A = levels[selected];
+                saveSelection = true;
+            }
         }
     }
 
-    if (saveSelection && (millis() - saveDelay) > lastInput) {
+    if (saveSelection && (now - saveDelay) > lastInput) {
         EEPROM.update(MEM_ADDRESS, selected);
         saveSelection = false;
     }
