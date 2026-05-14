@@ -21,7 +21,7 @@ bool buttonPressed = false;
 bool saveSelection = false;
 unsigned long lastInput = 0;
 const unsigned long inputDelay = 50;
-const unsigned long saveDelay = 5000;
+const unsigned long saveDelay = 8000;
 
 void setup() {
     pinMode(FAN_PWM_PIN, OUTPUT);
