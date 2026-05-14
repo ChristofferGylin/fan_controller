@@ -61,16 +61,14 @@ void loop() {
             lastInput = now;
         }
 
-        if (buttonPressed && (now - standby) > lastInput) {
+        if (buttonPressed && (now - standbyDelay) > lastInput) {
             standby = true;
             OCR1A = 0;
         }
 
         if (buttonPressed && buttonState == HIGH) {
-            buttonPressed = false;
-            lastInput = now;
 
-            if ((now - standby) <= lastInput) {
+            if ((now - standbyDelay) <= lastInput) {
                 
                 if (!standby) {
                     selected++;
@@ -82,7 +80,11 @@ void loop() {
 
                 OCR1A = levels[selected];
                 saveSelection = true;
+                standby = false;
             }
+
+            buttonPressed = false;
+            lastInput = now;
         }
     }
 
