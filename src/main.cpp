@@ -2,7 +2,7 @@
 #include <EEPROM.h>
 
 const int FAN_PWM_PIN = 9;
-const int BUTTON_PIN = 2;
+const int BUTTON_PIN = 3;
 const int MEM_ADDRESS = 0;
 
 int levels[] = {
